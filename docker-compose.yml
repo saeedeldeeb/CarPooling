@@ -1,7 +1,7 @@
 services:
   postgresql:
     container_name: cp_pg_sql
-    image: postgres
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
 
   mongodb:
-    image: mongo
+    image: mongo:8.0
     container_name: cp_mongo_db
     ports:
       - "27017:27017"
@@ -24,38 +24,30 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: cp_zookeeper
-    environment:
-      ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "22181:2181"
     networks:
       - microservices-net
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: apache/kafka:latest
     container_name: cp_kafka
     ports:
       - "9092:9092"
-    depends_on:
-      - zookeeper
     environment:
+      KAFKA_NODE_ID: 0
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 0@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
     networks:
       - microservices-net
 
   zipkin:
-    image: openzipkin/zipkin
+    image: openzipkin/zipkin-slim:3
     container_name: cp_zipkin
     ports:
       - "9411:9411"
@@ -63,11 +55,11 @@ services:
       - microservices-net
 
   mail-dev:
-    image: maildev/maildev
+    image: maildev/maildev:2.1.0
     container_name: cp_mail-dev
     ports:
-      - "1080:88"
-      - "1025:25"
+      - "1080:1080"
+      - "1025:1025"
     networks:
       - microservices-net
 
