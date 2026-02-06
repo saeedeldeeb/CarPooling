@@ -55,6 +55,24 @@ services:
     networks:
       - microservices-net
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.2
+    container_name: cp_keycloak
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgresql:5432/keycloak_db
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+    ports:
+      - "8090:8080"
+    networks:
+      - microservices-net
+    depends_on:
+      - postgresql
+
   mail-dev:
     image: maildev/maildev:2.1.0
     container_name: cp_mail-dev
