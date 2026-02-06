@@ -6,6 +6,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       PGDATA: /data/postgres
+      POSTGRES_INITDB_ARGS: "--locale-provider=icu --icu-locale=en-US"
     volumes:
       - postgres:/data/postgres
     ports:
