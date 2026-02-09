@@ -1,0 +1,22 @@
+FROM eclipse-temurin:21-jdk-alpine
+ARG SERVICE_NAME
+ENV SERVICE_NAME=${SERVICE_NAME}
+WORKDIR /app
+
+# Install inotify-tools for file watching
+RUN apk add --no-cache inotify-tools
+
+# Copy Maven wrapper and POM first for dependency caching
+COPY services/${SERVICE_NAME}/mvnw .
+COPY services/${SERVICE_NAME}/.mvn .mvn
+COPY services/${SERVICE_NAME}/pom.xml .
+RUN chmod +x mvnw && ./mvnw dependency:resolve -q
+
+# Copy source (overridden by volume mount at runtime for hot reload)
+COPY services/${SERVICE_NAME}/src src
+
+# Copy entrypoint script
+COPY docker/dev-entrypoint.sh .
+RUN chmod +x dev-entrypoint.sh
+
+ENTRYPOINT ["./dev-entrypoint.sh"]

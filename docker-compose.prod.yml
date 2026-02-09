@@ -1,0 +1,142 @@
+services:
+  config-server:
+    container_name: cp_config-server
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        SERVICE_NAME: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - microservices-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  discovery:
+    container_name: cp_discovery
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        SERVICE_NAME: discovery
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_INSTANCE_HOSTNAME: discovery
+    networks:
+      - microservices-net
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # gateway:
+  #   container_name: cp_gateway
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #     args:
+  #       SERVICE_NAME: gateway
+  #   ports:
+  #     - "8222:8222"
+  #   environment:
+  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  #   networks:
+  #     - microservices-net
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+
+  # ride:
+  #   container_name: cp_ride
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #     args:
+  #       SERVICE_NAME: ride
+  #   environment:
+  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  #   networks:
+  #     - microservices-net
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+
+  # booking:
+  #   container_name: cp_booking
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #     args:
+  #       SERVICE_NAME: booking
+  #   environment:
+  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  #   networks:
+  #     - microservices-net
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+
+  # payment:
+  #   container_name: cp_payment
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #     args:
+  #       SERVICE_NAME: payment
+  #   environment:
+  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  #   networks:
+  #     - microservices-net
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+
+  # rating:
+  #   container_name: cp_rating
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #     args:
+  #       SERVICE_NAME: rating
+  #   environment:
+  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  #   networks:
+  #     - microservices-net
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+
+  # notification:
+  #   container_name: cp_notification
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #     args:
+  #       SERVICE_NAME: notification
+  #   environment:
+  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  #   networks:
+  #     - microservices-net
+  #   depends_on:
+  #     discovery:
+  #       condition: service_healthy
+
+networks:
+  microservices-net:
+    driver: bridge
