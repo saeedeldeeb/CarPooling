@@ -33,17 +33,24 @@ Each service is built independently from its own directory:
 # Run a specific test class
 ./services/<service-name>/mvnw -f services/<service-name>/pom.xml test -Dtest=ClassName
 
-# Start infrastructure (databases, kafka, zipkin, maildev)
+# Full dev stack with hot reload (infra + services)
 docker compose up -d
+
+# Infrastructure only (for running services from IDE)
+docker compose -f docker-compose.infra.yml up -d
+
+# Production builds
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## Startup Order
 
-1. `docker compose up -d` (infrastructure)
-2. `config-server` (port 8888) — must start first, other services pull config from it
-3. `discovery` (port 8761) — Eureka, must be up before business services register
-4. Business services (ride, booking, payment, rating, notification) — any order
-5. `gateway` — API entry point, routes to services via Eureka
+1. `docker compose up -d` — starts everything (infra + services with hot reload and correct startup ordering)
+2. Or for IDE-based development: `docker compose -f docker-compose.infra.yml up -d` (infrastructure only), then start services manually:
+   1. `config-server` (port 8888) — must start first, other services pull config from it
+   2. `discovery` (port 8761) — Eureka, must be up before business services register
+   3. Business services (ride, booking, payment, rating, notification) — any order
+   4. `gateway` — API entry point, routes to services via Eureka
 
 ## Architecture
 

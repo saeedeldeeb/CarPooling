@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarPooling Config Server</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+        }
+        .card {
+            text-align: center;
+            padding: 3rem 4rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        .icon { font-size: 3rem; margin-bottom: 1rem; }
+        h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .subtitle { color: #94a3b8; font-size: 1rem; margin-bottom: 2rem; }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            color: #4ade80;
+        }
+        .dot {
+            width: 8px; height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">&#9881;</div>
+        <h1>CarPooling Config Server</h1>
+        <p class="subtitle">Centralized configuration for the CarPooling microservices</p>
+        <div class="status">
+            <span class="dot"></span>
+            Running on port 8888
+        </div>
+        <div class="links">
+            <a href="/actuator/health">Health</a>
+            <a href="/actuator/info">Info</a>
+        </div>
+    </div>
+</body>
+</html>

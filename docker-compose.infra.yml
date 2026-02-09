@@ -14,6 +14,11 @@ services:
     networks:
       - microservices-net
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     image: mongo:8.0
@@ -27,6 +32,11 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=admin
     networks:
       - microservices-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: apache/kafka:latest
@@ -73,7 +83,8 @@ services:
     networks:
       - microservices-net
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
 
   mail-dev:
     image: maildev/maildev:2.1.0

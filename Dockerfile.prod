@@ -1,0 +1,11 @@
+FROM eclipse-temurin:21-jdk-alpine AS build
+ARG SERVICE_NAME
+WORKDIR /app
+COPY services/${SERVICE_NAME}/ .
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
