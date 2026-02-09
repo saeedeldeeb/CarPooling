@@ -1,0 +1,85 @@
+### Variables
+@keycloak = http://localhost:8090
+@realm = carpooling
+@clientId = carpooling-api
+@clientSecret = KEt0215dCBkfVZmB5UvP6yZNjssSZ94f
+
+### 1. Get Admin Token (from master realm)
+POST {{keycloak}}/realms/master/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=admin-cli&username=admin&password=admin
+
+> {%
+    client.global.set("adminToken", response.body.access_token);
+%}
+
+### 2. Register a New User
+POST {{keycloak}}/admin/realms/{{realm}}/users
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "john@example.com",
+  "username": "john@example.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  "enabled": true,
+  "emailVerified": true,
+  "credentials": [
+    {
+      "type": "password",
+      "value": "password123",
+      "temporary": false
+    }
+  ]
+}
+
+> {%
+    const location = response.headers.valueOf("Location");
+    if (location) {
+        client.global.set("userId", location.substring(location.lastIndexOf("/") + 1));
+    }
+%}
+
+### 3. Assign Driver Role - Get role info first
+GET {{keycloak}}/admin/realms/{{realm}}/roles/driver
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.global.set("roleId", response.body.id);
+%}
+
+### 4. Assign Driver Role to User
+POST {{keycloak}}/admin/realms/{{realm}}/users/{{userId}}/role-mappings/realm
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+[
+  {
+    "id": "{{roleId}}",
+    "name": "driver"
+  }
+]
+
+### 5. Login as User
+POST {{keycloak}}/realms/{{realm}}/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id={{clientId}}&client_secret={{clientSecret}}&username=john@example.com&password=password123
+
+> {%
+    client.global.set("accessToken", response.body.access_token);
+    client.global.set("refreshToken", response.body.refresh_token);
+%}
+
+### 6. Refresh Token
+POST {{keycloak}}/realms/{{realm}}/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&client_id={{clientId}}&client_secret={{clientSecret}}&refresh_token={{refreshToken}}
+
+> {%
+    client.global.set("accessToken", response.body.access_token);
+    client.global.set("refreshToken", response.body.refresh_token);
+%}
