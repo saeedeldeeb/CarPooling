@@ -39,23 +39,33 @@ services:
       timeout: 5s
       retries: 5
 
-  # gateway:
-  #   container_name: cp_gateway
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.prod
-  #     args:
-  #       SERVICE_NAME: gateway
-  #   ports:
-  #     - "8222:8222"
-  #   environment:
-  #     SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
-  #     EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
-  #   networks:
-  #     - microservices-net
-  #   depends_on:
-  #     discovery:
-  #       condition: service_healthy
+  gateway:
+    container_name: cp_gateway
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        SERVICE_NAME: gateway
+    ports:
+      - "8222:8222"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+      REDIS_HOST: redis
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/carpooling
+    networks:
+      - microservices-net
+    depends_on:
+      discovery:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 10
 
   # ride:
   #   container_name: cp_ride
