@@ -74,6 +74,35 @@ spring:
                 redis-rate-limiter.burstCapacity: 20
                 redis-rate-limiter.requestedTokens: 1
 
+        # OpenAPI docs routes
+        - id: ride-service-docs
+          uri: lb://ride-service
+          predicates:
+            - Path=/v3/api-docs/ride-service
+          filters:
+            - RewritePath=/v3/api-docs/ride-service, /v3/api-docs
+
+        - id: booking-service-docs
+          uri: lb://booking-service
+          predicates:
+            - Path=/v3/api-docs/booking-service
+          filters:
+            - RewritePath=/v3/api-docs/booking-service, /v3/api-docs
+
+        - id: payment-service-docs
+          uri: lb://payment-service
+          predicates:
+            - Path=/v3/api-docs/payment-service
+          filters:
+            - RewritePath=/v3/api-docs/payment-service, /v3/api-docs
+
+        - id: rating-service-docs
+          uri: lb://rating-service
+          predicates:
+            - Path=/v3/api-docs/rating-service
+          filters:
+            - RewritePath=/v3/api-docs/rating-service, /v3/api-docs
+
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 
@@ -94,6 +123,21 @@ spring:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/carpooling}
           jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/carpooling}/protocol/openid-connect/certs
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    urls:
+      - name: Ride Service
+        url: /v3/api-docs/ride-service
+      - name: Booking Service
+        url: /v3/api-docs/booking-service
+      - name: Payment Service
+        url: /v3/api-docs/payment-service
+      - name: Rating Service
+        url: /v3/api-docs/rating-service
 
 eureka:
   client:
