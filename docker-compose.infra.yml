@@ -78,6 +78,8 @@ services:
       KC_DB_URL: jdbc:postgresql://postgresql:5432/keycloak_db
       KC_DB_USERNAME: admin
       KC_DB_PASSWORD: admin
+      KC_HOSTNAME: http://keycloak:8080
+      KC_HOSTNAME_ADMIN: http://localhost:8090
     ports:
       - "8090:8080"
     networks:

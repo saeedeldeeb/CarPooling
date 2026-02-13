@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/v1/bookings/**").authenticated()
                         .pathMatchers("/api/v1/payments/**").authenticated()
                         .pathMatchers("/api/v1/ratings/**").authenticated()
+                        .pathMatchers("/auth/test").authenticated()
                         .pathMatchers("/fallback/**").permitAll()
                         .anyExchange().denyAll()
                 )
