@@ -1,4 +1,4 @@
-package com.eldeeb.discovery;
+package com.sawa.discovery;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

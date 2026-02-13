@@ -411,36 +411,37 @@ PENDING_APPROVAL --> CONFIRMED --> COMPLETED
 
 ---
 
-## 16. Feature Priority (MVP vs Future)
+## 16. Feature Roadmap
 
-### MVP (Minimum Viable Product)
+> This is a production-grade platform built for high-load from day one. All phases are built with best practices, scalability, and resilience in mind — there are no shortcuts.
+
+### Phase 1 — Core Platform
 - User registration and profile (with Keycloak)
-- Driver: publish ride with basic details
-- Passenger: search rides by route and date
+- Driver: publish ride with full details
+- Passenger: search rides by route, date, and filters (price, time, preferences)
 - Instant booking with payment hold
-- Basic cancellation and refund
-- Rating system (manual, 1-5 stars)
-- Email notifications (booking, payment, cancellation)
-- API Gateway with JWT authentication
-
-### Phase 2
 - Approval-required booking mode
+- Full cancellation and refund policy
+- Rating system (manual, 1-5 stars + automatic 14-day rule)
+- Email notifications (booking, payment, cancellation, reminders)
+- API Gateway with JWT authentication
 - Stopover points on rides
-- Search filters (price, time, preferences)
-- Trip alerts
-- In-app messaging
-- Automatic ratings (14-day rule)
 - Experience levels
 - Ladies-only rides
 
-### Phase 3
+### Phase 2 — Engagement & Communication
+- Trip alerts
+- In-app messaging (pre-booking and post-booking)
+- Push notifications
+- SMS notifications (critical events)
+- Round-trip publishing
+
+### Phase 3 — Trust, Safety & Operations
 - ID verification with document upload
 - Dispute resolution system
 - Admin dashboard
-- Advanced analytics
-- Push and SMS notifications
+- Advanced analytics and monitoring
 - Insurance integration
-- Round-trip publishing
 - Recurring rides (e.g., daily commute)
 
 ---
