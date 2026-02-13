@@ -1,4 +1,4 @@
-package com.eldeeb.discovery;
+package com.sawa.discovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
